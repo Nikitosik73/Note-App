@@ -1,8 +1,7 @@
 package com.mirea.todolist.viewmodel;
 
 import android.app.Application;
-import android.os.Handler;
-import android.os.Looper;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,13 +12,15 @@ import androidx.lifecycle.MutableLiveData;
 import com.mirea.todolist.data.Note;
 import com.mirea.todolist.data.NotesDatabase;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.schedulers.Schedulers;
+
 public class AddNoteViewModel extends AndroidViewModel {
 
     private NotesDatabase notesDatabase;
 
     private MutableLiveData<Boolean> shouldCloseScreen = new MutableLiveData<>();
-
-    private Handler handler = new Handler(Looper.getMainLooper());
 
     public AddNoteViewModel(@NonNull Application application) {
         super(application);
@@ -31,18 +32,14 @@ public class AddNoteViewModel extends AndroidViewModel {
     }
 
     public void saveNote(Note note) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                notesDatabase.notesDao().add(note);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        shouldCloseScreen.setValue(true);
-                    }
-                });
-            }
-        });
-        thread.start();
+        notesDatabase.notesDao().add(note)
+                .subscribeOn(Schedulers.io())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action() {
+                            @Override
+                            public void run() throws Throwable {
+                                shouldCloseScreen.setValue(true);
+                            }
+                        });
     }
 }
