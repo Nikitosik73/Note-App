@@ -15,6 +15,8 @@ import com.mirea.todolist.data.NotesDatabase;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
@@ -38,18 +40,26 @@ public class AddNoteViewModel extends AndroidViewModel {
     }
 
     public void saveNote(Note note) {
-        Disposable disposable = notesDatabase.notesDao().add(note)
-//                .delay(5, TimeUnit.SECONDS)
+        Disposable disposable = addRx(note)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action() {
-                            @Override
-                            public void run() throws Throwable {
-                                Log.d("AddNoteViewModel", "subscribe");
-                                shouldCloseScreen.setValue(true);
-                            }
-                        });
+                    @Override
+                    public void run() throws Throwable {
+                        Log.d("AddNoteViewModel", "AddNotes: " + note.getId());
+                        shouldCloseScreen.setValue(true);
+                    }
+                });
         compositeDisposable.add(disposable);
+    }
+
+    private Completable addRx(Note note){
+        return Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Throwable {
+                notesDatabase.notesDao().add(note);
+            }
+        });
     }
 
     @Override
