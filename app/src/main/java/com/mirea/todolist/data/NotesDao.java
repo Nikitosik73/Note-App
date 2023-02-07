@@ -14,11 +14,11 @@ import io.reactivex.rxjava3.core.Single;
 public interface NotesDao {
 
     @Query("select * from notes")
-    List<Note> getNotes();
+    LiveData<List<Note>> getNotes();
 
     @Insert
-    void add(Note note);
+    Completable add(Note note);
 
     @Query("delete from notes where id = :id")
-    void remove(int id);
+    Completable remove(int id);
 }
