@@ -12,7 +12,11 @@ import androidx.lifecycle.MutableLiveData;
 import com.mirea.todolist.data.Note;
 import com.mirea.todolist.data.NotesDatabase;
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -21,6 +25,8 @@ public class AddNoteViewModel extends AndroidViewModel {
     private NotesDatabase notesDatabase;
 
     private MutableLiveData<Boolean> shouldCloseScreen = new MutableLiveData<>();
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public AddNoteViewModel(@NonNull Application application) {
         super(application);
@@ -32,14 +38,23 @@ public class AddNoteViewModel extends AndroidViewModel {
     }
 
     public void saveNote(Note note) {
-        notesDatabase.notesDao().add(note)
+        Disposable disposable = notesDatabase.notesDao().add(note)
+                .delay(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action() {
                             @Override
                             public void run() throws Throwable {
+                                Log.d("AddNoteViewModel", "subscribe");
                                 shouldCloseScreen.setValue(true);
                             }
                         });
+        compositeDisposable.add(disposable);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        compositeDisposable.dispose();
     }
 }
