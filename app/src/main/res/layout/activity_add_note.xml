@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.AddNoteActivity">
+
+    <EditText
+        android:id="@+id/editTextAddNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:hint="@string/add_note"
+        android:inputType="textCapWords" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupPriority"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="25dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radioButtonLowPriority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/green"
+            android:fontFamily="@font/inter_black"
+            android:padding="10dp"
+            android:checked="true"
+            android:text="@string/low_priority"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/radioButtonMediumPriority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/orange"
+            android:fontFamily="@font/inter_black"
+            android:padding="10dp"
+            android:text="@string/medium_priority"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:id="@+id/radioButtonHighPriority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/red"
+            android:fontFamily="@font/inter_black"
+            android:padding="10dp"
+            android:text="@string/high_priority"
+            android:textColor="@color/white" />
+
+    </RadioGroup>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/inter_black"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:background="@drawable/btn_bg" />
+
+
+
+</LinearLayout>
