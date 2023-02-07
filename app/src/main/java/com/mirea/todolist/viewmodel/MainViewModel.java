@@ -49,6 +49,11 @@ public class MainViewModel extends AndroidViewModel {
                     public void accept(List<Note> notesFromDB) throws Throwable {
                         notes.setValue(notesFromDB);
                     }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Throwable {
+                        Log.d("MainViewModel", "Error refreshList");
+                    }
                 });
         compositeDisposable.add(disposable);
     }
@@ -58,6 +63,7 @@ public class MainViewModel extends AndroidViewModel {
             @Override
             public List<Note> call() throws Exception {
                 return notesDatabase.notesDao().getNotes();
+//                throw new Exception();
             }
         });
     }
@@ -73,6 +79,11 @@ public class MainViewModel extends AndroidViewModel {
                         Log.d("MainViewModel", "Removed: " + note.getId());
                         refreshList();
                     }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Throwable {
+                        Log.d("MainViewModel", "not removed");
+                    }
                 });
         compositeDisposable.add(disposable);
     }
@@ -81,7 +92,8 @@ public class MainViewModel extends AndroidViewModel {
         return Completable.fromAction(new Action() {
             @Override
             public void run() throws Throwable {
-                notesDatabase.notesDao().remove(note.getId());
+//                notesDatabase.notesDao().remove(note.getId());
+                throw new Exception();
             }
         });
     }

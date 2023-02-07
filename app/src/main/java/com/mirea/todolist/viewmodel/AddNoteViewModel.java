@@ -20,6 +20,7 @@ import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class AddNoteViewModel extends AndroidViewModel {
@@ -49,6 +50,11 @@ public class AddNoteViewModel extends AndroidViewModel {
                         Log.d("AddNoteViewModel", "AddNotes: " + note.getId());
                         shouldCloseScreen.setValue(true);
                     }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Throwable {
+                        Log.d("AddNoteViewModel", "not add new notes");
+                    }
                 });
         compositeDisposable.add(disposable);
     }
@@ -57,7 +63,8 @@ public class AddNoteViewModel extends AndroidViewModel {
         return Completable.fromAction(new Action() {
             @Override
             public void run() throws Throwable {
-                notesDatabase.notesDao().add(note);
+//                notesDatabase.notesDao().add(note);
+                throw new Exception();
             }
         });
     }
